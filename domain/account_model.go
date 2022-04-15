@@ -11,7 +11,7 @@ import (
 )
 
 type Account struct {
-	ID primitive.ObjectID `json:"_id" bson:"_id"`
+	ID primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
 	//Number     string             `json:"number" bson:"number"`
 	HolderName string  `json:"holdername" bson:"holdername"`
 	Balance    float64 `json:"balance" bson:"balance"`
@@ -54,7 +54,7 @@ func GetAccountDetail(id string) (Account, error) {
 
 	_id, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
-		return account, errors.New("Query Error")
+		return account, errors.New("GET_ACCOUNT_DETAIL: Query Error")
 	}
 
 	filter := bson.M{"_id": _id}
@@ -84,11 +84,11 @@ func UpdateAccount(a *Account) error {
 	collection := client.Database(dbname).Collection(colname)
 
 	filter := bson.M{"_id": a.ID}
-	update := bson.M{"$set": bson.M{"name": a.HolderName, "balance": a.Balance}}
+	update := bson.M{"$set": bson.M{"holdername": a.HolderName, "balance": a.Balance}}
 
 	result, err := collection.UpdateOne(context.TODO(), filter, update)
 	if err != nil {
-		return errors.New("Query Error")
+		return errors.New("UPDATE ACCOUNT: Query Error")
 	}
 
 	fmt.Println("Updated documents:", result.MatchedCount)

@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/henilthakor/bank_api/domain"
@@ -45,19 +46,24 @@ func CreateNewAccount(ctx echo.Context) error {
 
 func Withdraw(ctx echo.Context) error {
 	var withdrawData = new(service.WithdrawData)
+	fmt.Println("IN WITHDRAW CONTROLLER")
 
 	if err := ctx.Bind(withdrawData); err != nil {
+		fmt.Println("Binding Error in Withdraw")
 		errmap := map[string]string{"error": "Bad Request"}
 		errjson, _ := json.Marshal(errmap)
 		return ctx.JSON(http.StatusBadRequest, errjson)
 	}
 
+	fmt.Println("IN WITHDRAW CONTROLLER2")
 	if err := service.Withdraw(withdrawData); err != nil {
+		fmt.Println(err.Error())
 		errmap := map[string]string{"error": err.Error()}
 		errjson, _ := json.Marshal(errmap)
 		return ctx.JSON(http.StatusInternalServerError, errjson)
 	}
 
+	fmt.Println("IN WITHDRAW CONTROLLER3")
 	return ctx.JSON(http.StatusOK, withdrawData)
 
 }

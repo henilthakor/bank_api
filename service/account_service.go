@@ -2,25 +2,25 @@ package service
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/henilthakor/bank_api/domain"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type WithdrawData struct {
-	ID     primitive.ObjectID `json:"id"`
-	Amount float64            `json:"amount"`
+	ID     string  `json:"id"`
+	Amount float64 `json:"amount"`
 }
 
 type DepositData struct {
-	ID     primitive.ObjectID `json:"id"`
-	Amount float64            `json:"amount"`
+	ID     string  `json:"id"`
+	Amount float64 `json:"amount"`
 }
 
 type TransferData struct {
-	FromID primitive.ObjectID `json:"fromid"`
-	ToID   primitive.ObjectID `json:"toid"`
-	Amount float64            `json:"amount"`
+	FromID string  `json:"fromid"`
+	ToID   string  `json:"toid"`
+	Amount float64 `json:"amount"`
 }
 
 func GetAccountDetail(id string) (domain.Account, error) {
@@ -35,7 +35,8 @@ func CreateNewAccount(a *domain.Account) (string, error) {
 }
 
 func Withdraw(wd *WithdrawData) error {
-	a, err := domain.GetAccountDetail(wd.ID.String())
+	fmt.Println("IN WITHDRAW SERVICE")
+	a, err := domain.GetAccountDetail(wd.ID)
 	if err != nil {
 		return err
 	}
@@ -50,7 +51,7 @@ func Withdraw(wd *WithdrawData) error {
 }
 
 func Deposit(dd *DepositData) error {
-	a, err := domain.GetAccountDetail(dd.ID.String())
+	a, err := domain.GetAccountDetail(dd.ID)
 	if err != nil {
 		return err
 	}
@@ -62,12 +63,12 @@ func Deposit(dd *DepositData) error {
 }
 
 func Transfer(td *TransferData) error {
-	a1, err1 := domain.GetAccountDetail(td.FromID.String())
+	a1, err1 := domain.GetAccountDetail(td.FromID)
 	if err1 != nil {
 		return err1
 	}
 
-	a2, err2 := domain.GetAccountDetail(td.ToID.String())
+	a2, err2 := domain.GetAccountDetail(td.ToID)
 	if err2 != nil {
 		return err2
 	}
